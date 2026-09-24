@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings</title>
+  <link rel="stylesheet" href="settings.css?v=4"/>
+</head>
+<body>
+  <div class="app">
+    <header class="titlebar">
+      <span>Settings</span>
+      <button class="close" aria-label="Close Settings" onclick="parent.postMessage('close-settings','*')">
+        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M0 0l10 10M10 0L0 10" stroke="currentColor" fill="none"/></svg>
+      </button>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="profile" id="profile"></div>
+        <nav id="nav" aria-label="Settings sections"></nav>
+      </aside>
+      <main class="content" id="settingsContent" tabindex="-1"><!-- filled by settings.js --></main>
+    </div>
+  </div>
+
+  <script src="settings.js?v=4"></script>
+</body>
+</html>

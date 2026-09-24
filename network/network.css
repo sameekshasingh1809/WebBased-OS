@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: #ffeaf4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.network-window {
+  background-color: #ffeaf4;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 25px 30px;
+  width: 420px;
+  text-align: left;
+  color: #512b58;
+}
+
+h2 {
+  text-align: center;
+  color: #ff66b3;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ffb6d1;
+  margin-bottom: 15px;
+}
+
+.network-info {
+  background-color: #fff0f6;
+  border: 1px dashed #ffb6d1;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.network-info strong {
+  color: #512b58;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.connect {
+  background-color: #ff66b3;
+  color: white;
+}
+.connect:hover {
+  background-color: #ff3385;
+}
+
+.disconnect {
+  background-color: #d9534f;
+  color: white;
+}
+.disconnect:hover {
+  background-color: #c9302c;
+}
+
+.close {
+  background-color: #f5b9ff;
+  color: #512b58;
+}
+.close:hover {
+  background-color: #f097ff;
+}

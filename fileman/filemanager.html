@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="filemanager.css" />
+  </head>
+  <body>
+    <div class="filemanager-window">
+      <div class="filemanager-header">
+        <span>File Explorer</span>
+        <div class="window-controls">
+          <span class="close-button" id="close-file">×</span>
+        </div>
+      </div>
+      <div class="filemanager-body">
+        <div class="sidebar">
+          <ul>
+            <li>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style="width: 20px; height: 20px; margin-right: 8px"
+              >
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z" />
+              </svg>
+              <span>Home</span>
+            </li>
+            <li>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style="width: 20px; height: 20px; margin-right: 8px"
+              >
+                <path
+                  d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-4 10V8H6v8h10z"
+                />
+              </svg>
+              <span>Documents</span>
+            </li>
+            <li>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style="width: 20px; height: 20px; margin-right: 8px"
+              >
+                <path
+                  d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 8h-2v2h2v-2zm2-4h-4V8h4v4z"
+                />
+              </svg>
+              <span>Downloads</span>
+            </li>
+          </ul>
+        </div>
+        <div class="file-list">
+          <div class="file-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style="width: 32px; height: 32px; margin-right: 8px"
+            >
+              <path
+                d="M13 9h-2v2h2v-2zm0 4h-2v2h2v-2zm4-8c-1.11 0-2 .89-2 2h-2c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3h-2c1.11 0 2-.89 2-2s-.89-2-2-2zm-8 0c-1.11 0-2 .89-2 2h-2c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3h-2c1.11 0 2-.89 2-2s-.89-2-2-2zM6 18c-1.11 0-2 .89-2 2h-2c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3h-2c1.11 0 2-.89 2-2s-.89-2-2-2zm12 0c-1.11 0-2 .89-2 2h-2c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3h-2c1.11 0 2-.89 2-2s-.89-2-2-2z"
+              />
+            </svg>
+            <span>My Document.txt</span>
+          </div>
+          <div class="file-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style="width: 32px; height: 32px; margin-right: 8px"
+            >
+              <path
+                d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm2 12v-2h8v2H8zm0-4V8h8v2H8z"
+              />
+            </svg>
+            <span>Another File.pdf</span>
+          </div>
+          <div class="file-item">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style="width: 32px; height: 32px; margin-right: 8px"
+            >
+              <path
+                d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-6l-2-2z"
+              />
+            </svg>
+            <span>Pictures</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const closeButton = document.getElementById("close-file");
+  if (closeButton) {
+      closeButton.addEventListener("click", () => {
+          // Access the parent window from within the iframe
+          window.parent.document.getElementById("fileid").style.display = "none";
+          // Optional: Reset the showfile variable if needed
+          window.parent.showfile = 1;
+      });
+  }
+});
+
+  </script>
+  </body>
+</html>

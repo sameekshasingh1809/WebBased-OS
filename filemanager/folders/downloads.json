@@ -1,0 +1,14 @@
+[
+    {
+        "name": "conspiracy_theories.txt",
+        "content": "1. Birds charge on power lines.\n2. The moon is actually a giant egg.\n3. All printers are part of a secret rebellion."
+    },
+    {
+        "name": "rejected_haikus.txt",
+        "content": "Microwave beeps loud,\nMidnight snacks now compromised,\nDog starts barking too."
+    },
+    {
+        "name": "fake_invoice.txt",
+        "content": "Item: Time Machine\nQuantity: 1 (already used it)\nTotal: $0 (I paid in the past)"
+    }
+]

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cute Terminal</title>
+<style>
+/* --- Terminal Window --- */
+body, html {
+  margin:0; padding:0; height:100%; font-family: "Comic Neue", monospace;
+  background:#f0e7ff;
+}
+
+.terminal-window {
+  display:flex;
+  flex-direction:column;
+  height:90vh;
+  width:90vw;
+  margin:5vh auto;
+  background:#fff8e7;
+  color:#333;
+  border-radius:20px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.2);
+  overflow:hidden;
+}
+
+/* --- Header --- */
+.terminal-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 15px;
+  background:#ffd8a8;
+  color:#333;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  font-weight:bold;
+  font-size:16px;
+}
+
+.close-button {
+  cursor:pointer;
+  padding:0 10px;
+  background:#ff6b6b;
+  border-radius:50%;
+  transition: 0.2s;
+}
+.close-button:hover {
+  background:#ff8787;
+}
+
+/* --- Output --- */
+.terminal-output {
+  flex:1;
+  overflow-y:auto;
+  padding:10px 15px;
+  font-family: "Comic Neue", monospace;
+  background:#fffbe6;
+  color:#333;
+  line-height:1.5;
+}
+
+/* --- Input --- */
+.terminal-input {
+  display:flex;
+  align-items:center;
+  padding:10px 15px;
+  background:#fffbe6;
+  border-top:1px solid #ffd8a8;
+}
+
+.terminal-input span {
+  margin-right:5px;
+}
+
+.terminal-input input {
+  flex:1;
+  background:#fffbe6;
+  color:#333;
+  border:none;
+  outline:none;
+  font-family: "Comic Neue", monospace;
+  font-size:14px;
+}
+</style>
+</head>
+<body>
+<div class="terminal-window">
+  <div class="terminal-header">
+    <span>Terminal</span>
+    <span class="close-button" id="close-terminal">×</span>
+  </div>
+
+  <div class="terminal-output" id="terminal-output">
+    <p><span class="user">user@virtual:</span><span class="prompt">$</span> ls -l</p>
+    <p>-rw-r--r-- 1 user user 1024 document.txt</p>
+    <p>drwxr-xr-x 2 user user 4096 downloads</p>
+  </div>
+
+  <div class="terminal-input">
+    <span class="user">user@virtual:</span><span class="prompt">$</span>
+    <input type="text" id="terminal-input" autofocus />
+  </div>
+</div>
+
+<script>
+// --- Close button ---
+const closeBtn = document.getElementById('close-terminal');
+closeBtn.addEventListener('click', () => {
+  window.parent.postMessage({ action: 'close-terminal' }, '*');
+});
+
+// --- Terminal commands ---
+const input = document.getElementById('terminal-input');
+const output = document.getElementById('terminal-output');
+
+const files = {
+  'document.txt': 'This is a sample document.',
+  'notes.txt': 'These are some notes.',
+  'downloads': '[folder]'
+};
+
+input.addEventListener('keydown', e => {
+  if(e.key === 'Enter') {
+    const cmd = input.value.trim();
+    if(!cmd) return;
+
+    // Show typed command
+    const line = document.createElement('p');
+    line.innerHTML = `<span class="user">user@virtual:</span><span class="prompt">$</span> ${cmd}`;
+    output.appendChild(line);
+
+    const args = cmd.split(' ');
+    const mainCmd = args[0];
+    const result = document.createElement('p');
+
+    switch(mainCmd) {
+      case 'ls':
+        if(args[1] === '-l') {
+          result.innerHTML = `-rw-r--r-- 1 user user 1024 document.txt<br>drwxr-xr-x 2 user user 4096 downloads`;
+        } else {
+          result.textContent = Object.keys(files).join('  ');
+        }
+        break;
+      case 'pwd':
+        result.textContent = '/home/user';
+        break;
+      case 'help':
+        result.textContent = 'Commands: ls, ls -l, pwd, echo, cat, date, whoami, clear, help';
+        break;
+      case 'clear':
+        output.innerHTML = '';
+        break;
+      case 'echo':
+        result.textContent = args.slice(1).join(' ');
+        break;
+      case 'whoami':
+        result.textContent = 'user';
+        break;
+      case 'date':
+        result.textContent = new Date().toString();
+        break;
+      case 'cat':
+        const file = args[1];
+        if(files[file]) result.textContent = files[file];
+        else result.textContent = `cat: ${file}: No such file or directory`;
+        break;
+      default:
+        result.textContent = `bash: ${cmd}: command not found`;
+    }
+
+    if(mainCmd !== 'clear') output.appendChild(result);
+
+    output.scrollTop = output.scrollHeight;
+    input.value = '';
+  }
+});
+</script>
+</body>
+</html>

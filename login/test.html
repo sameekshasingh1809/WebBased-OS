@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Show Users</title>
+  <style>
+    #userList {
+      margin-top: 20px;
+      display: none;
+      padding: 10px;
+      border: 1px solid #ccc;
+      width: fit-content;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="toggleButton">Show Users</button>
+  <div id="userList"></div>
+
+  <script>
+    const button = document.getElementById('toggleButton');
+    const userListDiv = document.getElementById('userList');
+    let visible = false;
+
+    button.addEventListener('click', async () => {
+      if (!visible) {
+        try {
+          const response = await fetch('get-users.php');
+          const users = await response.json();
+
+          if (Array.isArray(users)) {
+            userListDiv.innerHTML = users.map(user => `<div>${user}</div>`).join('');
+            userListDiv.style.display = 'block';
+            button.innerText = 'Hide Users';
+            visible = true;
+          } else {
+            userListDiv.innerHTML = 'No users found or error in data.';
+            userListDiv.style.display = 'block';
+          }
+        } catch (err) {
+          userListDiv.innerHTML = 'Failed to load users.';
+          userListDiv.style.display = 'block';
+          console.error(err);
+        }
+      } else {
+        userListDiv.style.display = 'none';
+        button.innerText = 'Show Users';
+        visible = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>File Explorer</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            overflow: hidden;
+
+            background: #fffdf0;
+        }
+
+
+        /* =====================================================
+           MAIN FILE EXPLORER
+           ===================================================== */
+
+        .file-manager {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #fffdf0;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           TITLE BAR
+           ===================================================== */
+
+        .title-bar {
+
+            height: 58px;
+            min-height: 58px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 18px 0 24px;
+
+            background: #ff6868;
+
+            color: white;
+
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        .close-button {
+
+            width: 34px;
+            height: 34px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: transparent;
+
+            color: white;
+
+            font-size: 24px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .close-button:hover {
+            background: rgba(255,255,255,.20);
+        }
+
+
+        /* =====================================================
+           MAIN AREA
+           ===================================================== */
+
+        .main-area {
+
+            flex: 1;
+
+            min-height: 0;
+
+            display: flex;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+           ===================================================== */
+
+        .sidebar {
+
+            width: 215px;
+            min-width: 215px;
+
+            padding: 20px 12px;
+
+            background: #ffd9a8;
+
+            border-right: 2px solid #ff6868;
+        }
+
+
+        .sidebar-title {
+
+            padding: 4px 12px 12px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            color: #805b38;
+
+            text-transform: uppercase;
+        }
+
+
+        .folder-button {
+
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 14px;
+
+            margin-bottom: 6px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: transparent;
+
+            color: #202020;
+
+            font-size: 17px;
+
+            text-align: left;
+
+            cursor: pointer;
+        }
+
+
+        .folder-button:hover {
+
+            background: rgba(255,255,255,.45);
+        }
+
+
+        .folder-button.active {
+
+            background: #fff4df;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 2px 7px rgba(0,0,0,.08);
+        }
+
+
+        .folder-icon {
+
+            font-size: 20px;
+
+            width: 25px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           CONTENT AREA
+           ===================================================== */
+
+        .content {
+
+            flex: 1;
+
+            min-width: 0;
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            background: #fffdf0;
+        }
+
+
+        /* =====================================================
+           TOOLBAR
+           ===================================================== */
+
+        .toolbar {
+
+            height: 60px;
+            min-height: 60px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 18px;
+
+            border-bottom: 1px solid #eadfca;
+
+            background: #fff8e7;
+        }
+
+
+        .current-folder {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #333;
+        }
+
+
+        .refresh-button {
+
+            margin-left: auto;
+
+            border: none;
+            border-radius: 8px;
+
+            padding: 9px 14px;
+
+            background: #ff6868;
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .refresh-button:hover {
+            background: #ef5353;
+        }
+
+
+        /* =====================================================
+           FILE GRID
+           ===================================================== */
+
+        .file-grid {
+
+            flex: 1;
+
+            min-height: 0;
+
+            padding: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(170px, 1fr)
+                );
+
+            grid-auto-rows: 190px;
+
+            gap: 18px;
+
+            overflow-y: auto;
+        }
+
+
+        /* =====================================================
+           FILE CARD
+           ===================================================== */
+
+        .file-card {
+
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 16px;
+
+            border-radius: 14px;
+
+            background: #ffdced;
+
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                background .15s ease,
+                box-shadow .15s ease;
+
+            user-select: none;
+        }
+
+
+        .file-card:hover {
+
+            transform: translateY(-2px);
+
+            background: #ffd4e8;
+
+            box-shadow:
+                0 5px 14px rgba(0,0,0,.10);
+        }
+
+
+        .file-card.selected {
+
+            outline: 3px solid #ff6868;
+
+            background: #ffd0e5;
+        }
+
+
+        .file-icon {
+
+            width: 64px;
+            height: 74px;
+
+            margin-bottom: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 58px;
+        }
+
+
+        .file-name {
+
+            width: 100%;
+
+            text-align: center;
+
+            font-size: 16px;
+            font-weight: 500;
+
+            color: #202020;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+           ===================================================== */
+
+        .empty-state {
+
+            grid-column: 1 / -1;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            color: #777;
+
+            font-size: 17px;
+        }
+
+
+        .empty-icon {
+
+            font-size: 55px;
+
+            margin-bottom: 10px;
+        }
+
+
+        /* =====================================================
+           FILE VIEWER MODAL
+           ===================================================== */
+
+        .file-viewer {
+
+            position: fixed;
+
+            inset: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 30px;
+
+            background: rgba(0,0,0,.35);
+
+            z-index: 100;
+        }
+
+
+        .file-viewer[hidden] {
+            display: none;
+        }
+
+
+        .viewer-card {
+
+            width: min(760px, 90vw);
+
+            height: min(620px, 82vh);
+
+            display: flex;
+
+            flex-direction: column;
+
+            background: #fffdf4;
+
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.40);
+        }
+
+
+        .viewer-titlebar {
+
+            height: 55px;
+            min-height: 55px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 18px;
+
+            background: #ff6868;
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: 700;
+        }
+
+
+        .viewer-title {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .viewer-close {
+
+            border: none;
+
+            background: transparent;
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+
+        .viewer-content {
+
+            flex: 1;
+
+            min-height: 0;
+
+            padding: 22px;
+
+            overflow: auto;
+
+            background: #fffdf4;
+        }
+
+
+        .viewer-content pre {
+
+            margin: 0;
+
+            white-space: pre-wrap;
+
+            overflow-wrap: anywhere;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size: 15px;
+
+            line-height: 1.55;
+
+            color: #202020;
+        }
+
+
+        .viewer-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            padding: 14px 18px;
+
+            border-top: 1px solid #eadfca;
+
+            background: #fff7df;
+        }
+
+
+        .viewer-actions button {
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 10px 17px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .close-file-btn {
+
+            background: #e7e7e7;
+
+            color: #222;
+        }
+
+
+        .delete-file-btn {
+
+            background: #ef4444;
+
+            color: white;
+        }
+
+
+        .delete-file-btn:hover {
+
+            background: #dc2626;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 155px;
+                min-width: 155px;
+            }
+
+            .folder-button {
+                font-size: 14px;
+            }
+
+            .file-grid {
+                grid-template-columns:
+                    repeat(
+                        auto-fill,
+                        minmax(130px, 1fr)
+                    );
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="file-manager">
+
+
+    <!-- =====================================================
+         TITLE BAR
+         ===================================================== -->
+
+    <div class="title-bar">
+
+        <span>File Explorer</span>
+
+        <button
+            class="close-button"
+            onclick="closeFileManager()"
+            title="Close"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN AREA
+         ===================================================== -->
+
+    <div class="main-area">
+
+
+        <!-- =================================================
+             SIDEBAR
+             ================================================= -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Locations
+            </div>
+
+
+            <button
+                class="folder-button active"
+                data-folder="home"
+                onclick="changeFolder('home')"
+            >
+
+                <span class="folder-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Home
+                </span>
+
+            </button>
+
+
+            <button
+                class="folder-button"
+                data-folder="downloads"
+                onclick="changeFolder('downloads')"
+            >
+
+                <span class="folder-icon">
+                    ⬇️
+                </span>
+
+                <span>
+                    Downloads
+                </span>
+
+            </button>
+
+
+            <button
+                class="folder-button"
+                data-folder="desktop"
+                onclick="changeFolder('desktop')"
+            >
+
+                <span class="folder-icon">
+                    🖥️
+                </span>
+
+                <span>
+                    Desktop
+                </span>
+
+            </button>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <section class="content">
+
+
+            <div class="toolbar">
+
+                <span
+                    id="currentFolder"
+                    class="current-folder"
+                >
+                    Home
+                </span>
+
+
+                <button
+                    class="refresh-button"
+                    onclick="loadFiles()"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+            <div
+                id="fileGrid"
+                class="file-grid"
+            >
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📂
+                    </div>
+
+                    <div>
+                        Loading files...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FILE VIEWER
+         ===================================================== -->
+
+    <div
+        id="fileViewer"
+        class="file-viewer"
+        hidden
+    >
+
+        <div class="viewer-card">
+
+
+            <div class="viewer-titlebar">
+
+                <span
+                    id="viewerTitle"
+                    class="viewer-title"
+                >
+                    File
+                </span>
+
+
+                <button
+                    class="viewer-close"
+                    onclick="closeViewer()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="viewer-content">
+
+                <pre id="viewerContent">
+Loading...
+                </pre>
+
+            </div>
+
+
+            <div class="viewer-actions">
+
+                <button
+                    class="close-file-btn"
+                    onclick="closeViewer()"
+                >
+                    Close
+                </button>
+
+
+                <button
+                    class="delete-file-btn"
+                    onclick="deleteCurrentFile()"
+                >
+                    Delete File
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    /* =====================================================
+       VARIABLES
+       ===================================================== */
+
+    let currentFolder = "home";
+
+    let currentFile = null;
+
+
+
+    /* =====================================================
+       FOLDER NAMES
+       ===================================================== */
+
+    const folderNames = {
+
+        home: "Home",
+
+        downloads: "Downloads",
+
+        desktop: "Desktop"
+
+    };
+
+
+
+    /* =====================================================
+       CLOSE FILE MANAGER
+       ===================================================== */
+
+    function closeFileManager() {
+
+        /*
+         * Tell the Desktop iframe to close
+         * the File Manager window.
+         */
+
+        window.parent.postMessage(
+            {
+                action: "close-filemanager"
+            },
+            "*"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       CHANGE FOLDER
+       ===================================================== */
+
+    function changeFolder(folder) {
+
+        currentFolder = folder;
+
+        currentFile = null;
+
+        document.getElementById(
+            "currentFolder"
+        ).textContent =
+            folderNames[folder] || folder;
+
+
+        /*
+         * Update active sidebar button.
+         */
+
+        document
+            .querySelectorAll(".folder-button")
+            .forEach(button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.folder === folder
+                );
+
+            });
+
+
+        loadFiles();
+
+    }
+
+
+
+    /* =====================================================
+       LOAD FILES
+       ===================================================== */
+
+    function loadFiles() {
+
+        const grid =
+            document.getElementById("fileGrid");
+
+
+        grid.innerHTML = `
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📂
+                </div>
+
+                <div>
+                    Loading files...
+                </div>
+
+            </div>
+
+        `;
+
+
+        fetch(
+            "get_files.php?folder=" +
+            encodeURIComponent(currentFolder)
+        )
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Failed to load files"
+                    );
+                }
+
+                return response.json();
+
+            })
+
+            .then(files => {
+
+                renderFiles(files);
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "File loading error:",
+                    error
+                );
+
+
+                grid.innerHTML = `
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            ⚠️
+                        </div>
+
+                        <div>
+                            Unable to load files.
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+    }
+
+
+
+    /* =====================================================
+       FILE ICON
+       ===================================================== */
+
+    function getFileIcon(filename) {
+
+        const lower =
+            filename.toLowerCase();
+
+
+        if (lower.endsWith(".txt")) {
+            return "📄";
+        }
+
+
+        if (lower.endsWith(".pdf")) {
+            return "📕";
+        }
+
+
+        if (
+            lower.endsWith(".jpg") ||
+            lower.endsWith(".jpeg") ||
+            lower.endsWith(".png") ||
+            lower.endsWith(".gif")
+        ) {
+            return "🖼️";
+        }
+
+
+        if (
+            lower.endsWith(".js") ||
+            lower.endsWith(".php") ||
+            lower.endsWith(".html") ||
+            lower.endsWith(".css")
+        ) {
+            return "💻";
+        }
+
+
+        if (
+            lower.endsWith(".csv") ||
+            lower.endsWith(".xlsx")
+        ) {
+            return "📊";
+        }
+
+
+        return "📄";
+
+    }
+
+
+
+    /* =====================================================
+       RENDER FILES
+       ===================================================== */
+
+    function renderFiles(files) {
+
+        const grid =
+            document.getElementById("fileGrid");
+
+
+        grid.innerHTML = "";
+
+
+        if (
+            !Array.isArray(files) ||
+            files.length === 0
+        ) {
+
+            grid.innerHTML = `
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📂
+                    </div>
+
+                    <div>
+                        This folder is empty.
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        files.forEach(filename => {
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "file-card";
+
+
+            card.title =
+                "Double-click to open";
+
+
+            const icon =
+                document.createElement("div");
+
+
+            icon.className =
+                "file-icon";
+
+
+            icon.textContent =
+                getFileIcon(filename);
+
+
+            const name =
+                document.createElement("div");
+
+
+            name.className =
+                "file-name";
+
+
+            name.textContent =
+                filename;
+
+
+            card.appendChild(icon);
+
+            card.appendChild(name);
+
+
+            /*
+             * Single click selects.
+             */
+
+            card.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(".file-card")
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                "selected"
+                            );
+
+                        });
+
+
+                    card.classList.add(
+                        "selected"
+                    );
+
+                }
+            );
+
+
+            /*
+             * Double click opens.
+             */
+
+            card.addEventListener(
+                "dblclick",
+                () => {
+
+                    openFile(filename);
+
+                }
+            );
+
+
+            /*
+             * Right click deletes.
+             */
+
+            card.addEventListener(
+                "contextmenu",
+                event => {
+
+                    event.preventDefault();
+
+                    deleteFile(
+                        filename
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+
+    /* =====================================================
+       OPEN FILE
+       ===================================================== */
+
+    function openFile(filename) {
+
+        currentFile = filename;
+
+
+        const viewer =
+            document.getElementById(
+                "fileViewer"
+            );
+
+
+        const title =
+            document.getElementById(
+                "viewerTitle"
+            );
+
+
+        const content =
+            document.getElementById(
+                "viewerContent"
+            );
+
+
+        title.textContent =
+            filename;
+
+
+        content.textContent =
+            "Loading...";
+
+
+        viewer.hidden = false;
+
+
+        fetch(
+            "get_file_content.php" +
+            "?folder=" +
+            encodeURIComponent(currentFolder) +
+            "&filename=" +
+            encodeURIComponent(filename)
+        )
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Unable to open file"
+                    );
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                if (data.error) {
+
+                    content.textContent =
+                        "Unable to open file: " +
+                        data.error;
+
+                    return;
+
+                }
+
+
+                content.textContent =
+                    data.content ?? "";
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "File open error:",
+                    error
+                );
+
+
+                content.textContent =
+                    "Unable to open this file.";
+
+            });
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE VIEWER
+       ===================================================== */
+
+    function closeViewer() {
+
+        document.getElementById(
+            "fileViewer"
+        ).hidden = true;
+
+
+        currentFile = null;
+
+    }
+
+
+
+    /* =====================================================
+       DELETE CURRENT FILE
+       ===================================================== */
+
+    function deleteCurrentFile() {
+
+        if (!currentFile) {
+            return;
+        }
+
+
+        const filename =
+            currentFile;
+
+
+        if (
+            !confirm(
+                `Delete "${filename}" from ${folderNames[currentFolder]}?`
+            )
+        ) {
+            return;
+        }
+
+
+        deleteFile(
+            filename,
+            true
+        );
+
+    }
+
+
+
+    /* =====================================================
+       DELETE FILE
+       ===================================================== */
+
+    function deleteFile(
+        filename,
+        closeAfterDelete = false
+    ) {
+
+        if (!closeAfterDelete) {
+
+            if (
+                !confirm(
+                    `Delete "${filename}" from ${folderNames[currentFolder]}?`
+                )
+            ) {
+                return;
+            }
+
+        }
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "folder",
+            currentFolder
+        );
+
+
+        formData.append(
+            "filename",
+            filename
+        );
+
+
+        fetch(
+            "delete_file.php",
+            {
+                method: "POST",
+                body: formData
+            }
+        )
+
+            .then(response =>
+                response.json()
+            )
+
+            .then(data => {
+
+                if (data.success) {
+
+                    if (
+                        currentFile === filename
+                    ) {
+
+                        closeViewer();
+
+                    }
+
+
+                    loadFiles();
+
+
+                    /*
+                     * If the Desktop folder
+                     * was changed, tell the
+                     * parent Desktop to refresh
+                     * its icons.
+                     */
+
+                    if (
+                        currentFolder === "desktop"
+                    ) {
+
+                        window.parent.postMessage(
+                            {
+                                action:
+                                    "desktop-files-changed"
+                            },
+                            "*"
+                        );
+
+                    }
+
+                } else {
+
+                    alert(
+                        data.error ||
+                        "Could not delete the file."
+                    );
+
+                }
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "Delete error:",
+                    error
+                );
+
+
+                alert(
+                    "Could not delete the file."
+                );
+
+            });
+
+    }
+
+
+
+    /* =====================================================
+       RECEIVE REQUESTS FROM DESKTOP
+       ===================================================== */
+
+    window.addEventListener(
+        "message",
+        function(event) {
+
+            const message =
+                event.data;
+
+
+            /*
+             * Desktop can tell File Manager
+             * to open a particular file.
+             */
+
+            if (
+                message?.action ===
+                "open-file"
+            ) {
+
+                const folder =
+                    message.folder;
+
+
+                const filename =
+                    message.filename;
+
+
+                if (
+                    folder &&
+                    filename
+                ) {
+
+                    changeFolder(
+                        folder
+                    );
+
+
+                    /*
+                     * Wait until the folder
+                     * files have loaded, then
+                     * open the requested file.
+                     */
+
+                    setTimeout(
+                        () => {
+
+                            openFile(
+                                filename
+                            );
+
+                        },
+                        250
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       TELL DESKTOP FILE MANAGER IS READY
+       ===================================================== */
+
+    window.parent.postMessage(
+        {
+            action:
+                "filemanager-ready"
+        },
+        "*"
+    );
+
+
+
+    /* =====================================================
+       STARTUP
+       ===================================================== */
+
+    loadFiles();
+
+
+</script>
+
+
+</body>
+
+</html>

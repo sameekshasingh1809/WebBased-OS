@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WebOS Desktop</title>
+
+    <link
+        rel="stylesheet"
+        href="desktop.css"
+    >
+
+
+<style>
+/* Desktop file viewer - added without changing the existing desktop CSS */
+.desktop-file-viewer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.30);
+    z-index: 5000;
+}
+.desktop-file-viewer[hidden] { display:none; }
+.desktop-file-viewer-card {
+    width:min(760px,82vw);
+    height:min(620px,76vh);
+    display:flex;
+    flex-direction:column;
+    background:#fffdf4;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 25px 70px rgba(0,0,0,.45),0 8px 25px rgba(0,0,0,.20);
+}
+.desktop-file-viewer-titlebar {
+    height:58px;
+    flex:0 0 58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    background:#ff6868;
+    color:#fff;
+    font-size:19px;
+    font-weight:700;
+}
+.desktop-file-viewer-titlebar button {
+    width:34px;height:34px;border:0;border-radius:50%;
+    background:rgba(255,255,255,.22);color:#fff;
+    font-size:25px;line-height:1;cursor:pointer;
+}
+.desktop-file-viewer-body {
+    flex:1;min-height:0;padding:22px;overflow:auto;background:#fffdf4;
+}
+#desktopFileViewerContent {
+    margin:0;min-height:100%;white-space:pre-wrap;overflow-wrap:anywhere;
+    font-family:Consolas,"Courier New",monospace;font-size:15px;line-height:1.55;color:#202020;
+}
+.desktop-file-viewer-actions {
+    display:flex;justify-content:flex-end;gap:12px;
+    padding:14px 18px;border-top:1px solid #eadfca;background:#fff7df;
+}
+.desktop-file-viewer-actions button {
+    border:0;border-radius:9px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;
+}
+.viewer-close-btn { background:#e7e7e7;color:#222; }
+.viewer-delete-btn { background:#ef4444;color:#fff; }
+.viewer-delete-btn:hover { background:#dc2626; }
+</style>
+
+</head>
+
+
+<body class="light">
+
+
+    <!-- =====================================================
+         DESKTOP
+         ===================================================== -->
+
+    <main
+        class="desktop"
+        id="desktopRoot"
+    >
+
+
+        <!-- =================================================
+             DESKTOP ICONS
+             ================================================= -->
+
+        <div class="icon-grid" id="iconGrid">
+
+
+            <!-- TERMINAL -->
+
+            <div
+                class="icon"
+                onclick="openTerminal()"
+                title="Terminal"
+            >
+
+                <div class="icon-image terminal-icon">
+
+                    <img
+                        src="terminal.svg"
+                        alt="Terminal"
+                    >
+
+                </div>
+
+                <span>Terminal</span>
+
+            </div>
+
+
+
+            <!-- FILE MANAGER -->
+
+            <div
+                class="icon"
+                onclick="openFileManager()"
+                title="File Manager"
+            >
+
+                <div class="icon-image">
+
+                    <img
+                        src="myfolder.png"
+                        alt="File Manager"
+                    >
+
+                </div>
+
+                <span>File Manager</span>
+
+            </div>
+
+
+
+            <!-- CODE EDITOR -->
+
+            <div
+                class="icon"
+                onclick="openCodeEditor()"
+                title="Code Editor"
+            >
+
+                <div class="icon-image">
+
+                    <img
+                        src="codeeditor.svg"
+                        alt="Code Editor"
+                    >
+
+                </div>
+
+                <span>Code Editor</span>
+
+            </div>
+
+
+
+            <!-- NETWORK -->
+
+            <div
+                class="icon"
+                onclick="openNetwork()"
+                title="Network"
+            >
+
+                <div class="icon-image system-app-icon">
+
+                    🌐
+
+                </div>
+
+                <span>Network</span>
+
+            </div>
+
+
+
+            <!-- SETTINGS -->
+
+            <div
+                class="icon"
+                onclick="openSettings()"
+                title="Settings"
+            >
+
+                <div class="icon-image system-app-icon">
+
+                    ⚙️
+
+                </div>
+
+                <span>Settings</span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             APPLICATION WINDOWS
+
+             IMPORTANT:
+             No application has a src initially.
+
+             The page is loaded only when the user
+             clicks its icon.
+             ================================================= -->
+
+
+        <!-- TERMINAL -->
+
+        <iframe
+            id="terminalWindow"
+            class="app-window terminal-window"
+            title="Terminal"
+            hidden
+        ></iframe>
+
+
+
+        <!-- FILE MANAGER -->
+
+        <iframe
+            id="fileManagerWindow"
+            class="app-window file-window"
+            title="File Manager"
+            data-src="../filemanager/index.html?v=2"
+            hidden
+        ></iframe>
+
+
+
+        <!-- CODE EDITOR -->
+
+        <iframe
+            id="codeEditorWindow"
+            class="app-window code-window"
+            title="Code Editor"
+            data-src="../code/index.php?v=2"
+            hidden
+        ></iframe>
+
+
+
+        <!-- NETWORK -->
+
+        <iframe
+            id="networkWindow"
+            class="app-window network-window"
+            title="Network"
+            data-src="../network/network.html?v=2"
+            hidden
+        ></iframe>
+
+
+
+        <!-- SETTINGS -->
+
+        <iframe
+            id="settingsWindow"
+            class="app-window settings-window"
+            title="Settings"
+            data-src="../settings/settings.html?v=4"
+            hidden
+        ></iframe>
+
+
+
+        <!-- =================================================
+             START MENU
+             ================================================= -->
+
+        <div
+            id="startMenu"
+            class="start-menu"
+        >
+
+
+            <!-- START HEADER -->
+
+            <div class="start-header">
+
+                <div class="start-logo">
+                    ◈
+                </div>
+
+                <div>
+
+                    <div class="start-title">
+                        WebOS
+                    </div>
+
+                    <div class="start-subtitle">
+                        Applications
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="start-divider"></div>
+
+
+
+            <!-- APPLICATIONS -->
+
+            <div class="start-apps">
+
+
+                <button
+                    class="start-item"
+                    onclick="openTerminal()"
+                >
+
+                    <span class="start-item-icon">
+                        🖥️
+                    </span>
+
+                    <span>
+                        Terminal
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    class="start-item"
+                    onclick="openFileManager()"
+                >
+
+                    <span class="start-item-icon">
+                        📁
+                    </span>
+
+                    <span>
+                        File Manager
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    class="start-item"
+                    onclick="openCodeEditor()"
+                >
+
+                    <span class="start-item-icon">
+                        💻
+                    </span>
+
+                    <span>
+                        Code Editor
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    class="start-item"
+                    onclick="openNetwork()"
+                >
+
+                    <span class="start-item-icon">
+                        🌐
+                    </span>
+
+                    <span>
+                        Network
+                    </span>
+
+                </button>
+
+
+
+                <button
+                    class="start-item"
+                    onclick="openSettings()"
+                >
+
+                    <span class="start-item-icon">
+                        ⚙️
+                    </span>
+
+                    <span>
+                        Settings
+                    </span>
+
+                </button>
+
+
+            </div>
+
+
+            <div class="start-divider"></div>
+
+
+
+            <!-- SHUTDOWN -->
+
+            <button
+                class="shutdown-item"
+                onclick="shutdownOS()"
+            >
+
+                <span>
+                    ⏻
+                </span>
+
+                <span>
+                    Shut Down
+                </span>
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             TASKBAR
+             ================================================= -->
+
+        <footer class="taskbar">
+
+
+            <!-- START BUTTON -->
+
+            <button
+                class="start-button"
+                id="startButton"
+                onclick="toggleStartMenu()"
+                title="Start"
+            >
+
+                <span class="webos-logo">
+                    ◈
+                </span>
+
+            </button>
+
+
+
+            <!-- PINNED APPLICATIONS -->
+
+            <div class="pinned-icons">
+
+
+                <button
+                    class="pinned-icon"
+                    onclick="openFileManager()"
+                    title="File Manager"
+                >
+                    📁
+                </button>
+
+
+                <button
+                    class="pinned-icon"
+                    onclick="openNetwork()"
+                    title="Network"
+                >
+                    🌐
+                </button>
+
+
+                <button
+                    class="pinned-icon"
+                    onclick="openCodeEditor()"
+                    title="Code Editor"
+                >
+                    💻
+                </button>
+
+
+                <button
+                    class="pinned-icon"
+                    onclick="openSettings()"
+                    title="Settings"
+                >
+                    ⚙️
+                </button>
+
+
+            </div>
+
+
+
+            <!-- EMPTY SPACE -->
+
+            <div class="taskbar-space"></div>
+
+
+
+            <!-- SYSTEM TRAY -->
+
+            <div class="system-tray">
+
+
+                <div
+                    class="tray-item"
+                    id="trayUser"
+                >
+                    👤 samiee
+                </div>
+
+
+                <div
+                    class="tray-item"
+                    id="trayWifi"
+                >
+                    📶 Offline
+                </div>
+
+
+                <div class="tray-item">
+                    🔋
+                </div>
+
+
+                <div
+                    class="tray-time"
+                    id="mytime"
+                >
+                    12:00 AM
+                </div>
+
+
+            </div>
+
+
+        </footer>
+
+
+    
+<!-- DESKTOP FILE VIEWER -->
+<div id="desktopFileViewer" class="desktop-file-viewer" hidden>
+    <div class="desktop-file-viewer-card">
+        <div class="desktop-file-viewer-titlebar">
+            <span id="desktopFileViewerTitle">File</span>
+            <button type="button" onclick="closeDesktopFileViewer()" title="Close">×</button>
+        </div>
+        <div class="desktop-file-viewer-body">
+            <pre id="desktopFileViewerContent">Loading...</pre>
+        </div>
+        <div class="desktop-file-viewer-actions">
+            <button type="button" class="viewer-close-btn" onclick="closeDesktopFileViewer()">Close</button>
+            <button type="button" class="viewer-delete-btn" onclick="deleteOpenDesktopFile()">Delete File</button>
+        </div>
+    </div>
+</div>
+
+</main>
+
+
+    <!-- =====================================================
+         BRIGHTNESS OVERLAY
+
+         Sits above the desktop, every app window, the
+         taskbar and the start menu (see desktop.css for
+         why this isn't a CSS filter). Its background is
+         set from JS in applyBrightnessOverlay().
+         ===================================================== -->
+
+    <div
+        id="brightnessOverlay"
+        class="brightness-overlay"
+        aria-hidden="true"
+    ></div>
+
+
+    <!-- =====================================================
+         CURSOR TRAIL
+
+         The real system cursor still does all click/hit
+         detection as normal — Edge doesn't let a webpage
+         change actual pointer speed or hijack hit-testing.
+         This is a purely decorative dot that follows the
+         real cursor 1:1 in position, with a CSS transition
+         whose duration is driven by the Mouse Speed setting,
+         so the setting has a real, visible effect without
+         ever touching what a click actually lands on.
+         ===================================================== -->
+
+    <div
+        id="cursorTrail"
+        class="cursor-trail"
+        aria-hidden="true"
+    ></div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+
+        /* =================================================
+           SETTINGS
+           ================================================= */
+
+        const OS_KEY = "osSettings";
+
+
+        function getOSSettings() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem(OS_KEY)
+                ) || {};
+
+            } catch (error) {
+
+                return {};
+
+            }
+
+        }
+
+
+        function saveOSSettings(data) {
+
+            const current =
+                getOSSettings();
+
+            const updated = {
+                ...current,
+                ...data
+            };
+
+            localStorage.setItem(
+                OS_KEY,
+                JSON.stringify(updated)
+            );
+
+            return updated;
+
+        }
+
+
+
+        /* =================================================
+           APPLY DESKTOP SETTINGS
+           ================================================= */
+
+        function applyOSSettings(
+            state = getOSSettings()
+        ) {
+
+            /*
+             * Theme
+             */
+
+            document.body.classList.remove(
+                "light",
+                "dark"
+            );
+
+            document.body.classList.add(
+                state.theme || "light"
+            );
+
+
+            /*
+             * Wallpaper
+             */
+
+            const desktop =
+                document.getElementById(
+                    "desktopRoot"
+                );
+
+
+            if (
+                state.wallpaper &&
+                state.wallpaper.trim() !== ""
+            ) {
+
+                desktop.style.backgroundImage =
+                    `url("${state.wallpaper}")`;
+
+            } else {
+
+                desktop.style.backgroundImage =
+                    'url("wallp.png")';
+
+            }
+
+
+            /*
+             * Brightness
+             */
+
+            applyBrightnessOverlay(
+                state.brightness ?? 1
+            );
+
+
+            /*
+             * Mouse speed (cursor-trail responsiveness —
+             * see the note on the #cursorTrail element for
+             * why this can't be the real system pointer speed)
+             */
+
+            applyMouseSpeed(
+                state.mouseSpeed ?? 5
+            );
+
+
+            /*
+             * Let any already-open application
+             * (Settings included) re-theme itself
+             * live, without waiting for a reload.
+             */
+
+            broadcastToApps({
+                type: "os:theme",
+                theme: state.theme || "light"
+            });
+
+
+            /*
+             * Username
+             */
+
+            document.getElementById(
+                "trayUser"
+            ).textContent =
+                `👤 ${state.username || "samiee"}`;
+
+            document.getElementById(
+                "trayUser"
+            ).title =
+                state.email || "";
+
+
+            /*
+             * Start menu subtitle — show the signed-in
+             * account email once one's been set, instead
+             * of the generic "Applications" label.
+             */
+
+            const startSubtitle =
+                document.querySelector(
+                    ".start-subtitle"
+                );
+
+            if (startSubtitle) {
+
+                startSubtitle.textContent =
+                    state.email || "Applications";
+
+            }
+
+
+            /*
+             * Wi-Fi
+             */
+
+            document.getElementById(
+                "trayWifi"
+            ).textContent =
+                state.wifi?.connected
+                    ? `📶 ${state.wifi.ssid}`
+                    : "📶 Offline";
+
+
+            /*
+             * Clock format
+             */
+
+            window.clock24 =
+                !!state.clock24;
+
+        }
+
+
+
+        /* =================================================
+           BRIGHTNESS OVERLAY
+
+           brightness range is 0.4–1.2 (see settings.js).
+           Below 1 we dim with a black overlay; above 1 we
+           "brighten" with a soft white overlay. At exactly
+           1 the overlay is fully transparent.
+           ================================================= */
+
+        function applyBrightnessOverlay(brightness) {
+
+            const overlay =
+                document.getElementById(
+                    "brightnessOverlay"
+                );
+
+            if (!overlay) {
+                return;
+            }
+
+            const b =
+                Math.min(
+                    1.2,
+                    Math.max(
+                        0.4,
+                        Number(brightness) || 1
+                    )
+                );
+
+            document.documentElement.style
+                .setProperty(
+                    "--desktop-brightness",
+                    b
+                );
+
+            if (b < 1) {
+
+                const alpha =
+                    (1 - b) / 0.6;
+
+                overlay.style.background =
+                    `rgba(0,0,0,${(alpha * 0.75).toFixed(3)})`;
+
+            } else if (b > 1) {
+
+                const alpha =
+                    (b - 1) / 0.2;
+
+                overlay.style.background =
+                    `rgba(255,255,255,${(alpha * 0.16).toFixed(3)})`;
+
+            } else {
+
+                overlay.style.background =
+                    "transparent";
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           CURSOR TRAIL
+           ================================================= */
+
+        (function(){
+
+            const trail =
+                document.getElementById(
+                    "cursorTrail"
+                );
+
+            if (!trail) {
+                return;
+            }
+
+            document.addEventListener(
+                "mousemove",
+                function(e) {
+
+                    trail.style.left = e.clientX + "px";
+                    trail.style.top  = e.clientY + "px";
+                    trail.classList.add("active");
+
+                }
+            );
+
+        })();
+
+
+        function applyMouseSpeed(speed) {
+
+            const value =
+                Math.min(
+                    10,
+                    Math.max(
+                        1,
+                        Number(speed) || 5
+                    )
+                );
+
+            /*
+             * speed 1  -> slow, laggy trail (260ms)
+             * speed 10 -> snappy, almost instant (44ms)
+             */
+
+            const ms =
+                260 - (value - 1) * 24;
+
+            document.documentElement.style
+                .setProperty(
+                    "--cursor-trail-ms",
+                    ms + "ms"
+                );
+
+        }
+
+
+
+        /* =================================================
+           BROADCAST TO APPLICATIONS
+
+           Pushes a message into every loaded app iframe
+           (Settings, Terminal, etc.) so an app that's
+           already open can react to a settings change —
+           e.g. re-theme itself — without a reload.
+           ================================================= */
+
+        function broadcastToApps(message) {
+
+            document
+                .querySelectorAll(".app-window")
+                .forEach(function(app) {
+
+                    if (
+                        app.contentWindow &&
+                        app.getAttribute("src")
+                    ) {
+
+                        app.contentWindow.postMessage(
+                            message,
+                            "*"
+                        );
+
+                    }
+
+                });
+
+        }
+
+
+
+        /* =================================================
+           CLOSE ALL APPLICATIONS
+           ================================================= */
+
+        function closeAllApps() {
+
+            const apps =
+                document.querySelectorAll(
+                    ".app-window"
+                );
+
+
+            apps.forEach(
+                function(app) {
+
+                    app.hidden = true;
+
+                    app.style.display =
+                        "none";
+
+                }
+            );
+
+        }
+
+
+
+        /* =================================================
+           LOAD APPLICATION
+           ================================================= */
+
+        function loadApplication(
+            app,
+            source
+        ) {
+
+            /*
+             * Load the page only the first
+             * time the application is opened.
+             */
+
+            if (
+                !app.getAttribute("src")
+            ) {
+
+                app.setAttribute(
+                    "src",
+                    source
+                );
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           OPEN APPLICATION
+           ================================================= */
+
+        function openApplication(
+            id
+        ) {
+
+            const app =
+                document.getElementById(id);
+
+
+            if (!app) {
+                return;
+            }
+
+
+            /*
+             * Hide every other application.
+             */
+
+            closeAllApps();
+
+
+            /*
+             * Read application URL.
+             */
+
+            const source =
+                app.dataset.src;
+
+
+            /*
+             * Load application.
+             */
+
+            if (source) {
+
+                loadApplication(
+                    app,
+                    source
+                );
+
+            }
+
+
+            /*
+             * Show application.
+             */
+
+            app.hidden = false;
+
+            app.style.display =
+                "block";
+
+
+            /*
+             * Put application above
+             * the desktop.
+             */
+
+            app.style.zIndex =
+                "1000";
+
+
+            closeStartMenu();
+
+        }
+
+
+
+        /* =================================================
+           TERMINAL
+           ================================================= */
+
+        function openTerminal() {
+
+            const terminal =
+                document.getElementById(
+                    "terminalWindow"
+                );
+
+
+            closeAllApps();
+
+
+            if (
+                !terminal.getAttribute("src")
+            ) {
+
+                terminal.setAttribute(
+                    "src",
+                    "../terminal/terminal.html?v=3"
+                );
+
+            }
+
+
+            terminal.hidden = false;
+
+            terminal.style.display =
+                "block";
+
+            terminal.style.zIndex =
+                "1000";
+
+
+            closeStartMenu();
+
+        }
+
+
+
+        /* =================================================
+           FILE MANAGER
+           ================================================= */
+
+        function openFileManager() {
+
+            openApplication(
+                "fileManagerWindow"
+            );
+
+        }
+
+
+
+        /* =================================================
+           CODE EDITOR
+           ================================================= */
+
+        function openCodeEditor() {
+
+            openApplication(
+                "codeEditorWindow"
+            );
+
+        }
+
+
+
+        /* =================================================
+           NETWORK
+           ================================================= */
+
+        function openNetwork() {
+
+            openApplication(
+                "networkWindow"
+            );
+
+        }
+
+
+
+        /* =================================================
+           SETTINGS
+           ================================================= */
+
+        function openSettings() {
+
+            openApplication(
+                "settingsWindow"
+            );
+
+        }
+
+
+
+        /* =================================================
+           CLOSE APPLICATION
+           ================================================= */
+
+        function closeApplication(
+            id
+        ) {
+
+            const app =
+                document.getElementById(id);
+
+
+            if (!app) {
+                return;
+            }
+
+
+            app.hidden = true;
+
+            app.style.display =
+                "none";
+
+        }
+
+
+        function closeTerminal() {
+
+            closeApplication(
+                "terminalWindow"
+            );
+
+        }
+
+
+        function closeSettings() {
+
+            closeApplication(
+                "settingsWindow"
+            );
+
+        }
+
+
+
+        /* =================================================
+           FILE MANAGER READY STATE
+
+           The File Manager iframe posts an
+           "filemanager-ready" message once its own
+           script has registered its listener. We wait
+           for that instead of guessing with a timer,
+           so an "open-file" request is never sent
+           before the iframe can actually receive it
+           (this was the bug: checking the iframe's
+           src attribute always looked "already
+           loaded" because we set that attribute
+           ourselves just before checking it, even on
+           the very first open).
+           ================================================= */
+
+        let fileManagerReady = false;
+        let pendingFileOpen = null;
+
+        function sendFileOpenRequest(folder, filename) {
+
+            const fileManager =
+                document.getElementById(
+                    "fileManagerWindow"
+                );
+
+            fileManager.contentWindow.postMessage(
+                {
+                    action: "open-file",
+                    folder: folder,
+                    filename: filename
+                },
+                "*"
+            );
+
+        }
+
+
+
+        /* =================================================
+           APPLICATION MESSAGES
+           ================================================= */
+
+        window.addEventListener(
+            "message",
+            function(event) {
+
+                const message =
+                    event.data;
+
+
+                if (
+                    message?.action ===
+                    "filemanager-ready"
+                ) {
+
+                    fileManagerReady = true;
+
+                    if (pendingFileOpen) {
+
+                        sendFileOpenRequest(
+                            pendingFileOpen.folder,
+                            pendingFileOpen.filename
+                        );
+
+                        pendingFileOpen = null;
+
+                    }
+
+                    return;
+
+                }
+
+
+                if (
+                    message?.action ===
+                    "close-terminal"
+                ) {
+
+                    closeTerminal();
+
+                }
+
+
+                if (
+                    message ===
+                    "close-settings"
+                ) {
+
+                    closeSettings();
+
+                }
+
+
+                if (
+                    message?.action ===
+                    "close-filemanager"
+                ) {
+
+                    closeApplication(
+                        "fileManagerWindow"
+                    );
+
+                    /*
+                     * The Desktop folder may have
+                     * changed while File Manager
+                     * was open — refresh its icons.
+                     */
+
+                    loadDesktopFiles();
+
+                }
+
+
+                if (
+                    message?.action ===
+                    "close-code"
+                ) {
+
+                    closeApplication(
+                        "codeEditorWindow"
+                    );
+
+                }
+
+
+                if (
+                    message?.action ===
+                    "close-network"
+                ) {
+
+                    closeApplication(
+                        "networkWindow"
+                    );
+
+                }
+
+
+                /*
+                 * Settings sends updated
+                 * OS information.
+                 */
+
+                if (
+                    message?.type ===
+                    "os:apply"
+                ) {
+
+                    const state =
+                        saveOSSettings(
+                            message.payload || {}
+                        );
+
+
+                    applyOSSettings(
+                        state
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =================================================
+           START MENU
+           ================================================= */
+
+        function toggleStartMenu() {
+
+            const menu =
+                document.getElementById(
+                    "startMenu"
+                );
+
+
+            menu.classList.toggle(
+                "show"
+            );
+
+        }
+
+
+        function closeStartMenu() {
+
+            document.getElementById(
+                "startMenu"
+            ).classList.remove(
+                "show"
+            );
+
+        }
+
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                const menu =
+                    document.getElementById(
+                        "startMenu"
+                    );
+
+
+                const button =
+                    document.getElementById(
+                        "startButton"
+                    );
+
+
+                if (
+                    !menu.contains(
+                        event.target
+                    ) &&
+                    !button.contains(
+                        event.target
+                    )
+                ) {
+
+                    closeStartMenu();
+
+                }
+
+            }
+        );
+
+
+
+        /* =================================================
+           CLOCK
+           ================================================= */
+
+        function updateClock() {
+
+            const clock =
+                document.getElementById(
+                    "mytime"
+                );
+
+
+            const now =
+                new Date();
+
+
+            let hours =
+                now.getHours();
+
+
+            const minutes =
+                String(
+                    now.getMinutes()
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            if (window.clock24) {
+
+                clock.textContent =
+                    `${String(hours).padStart(2, "0")}:${minutes}`;
+
+            } else {
+
+                const ampm =
+                    hours >= 12
+                        ? "PM"
+                        : "AM";
+
+
+                hours =
+                    hours % 12 || 12;
+
+
+                clock.textContent =
+                    `${hours}:${minutes} ${ampm}`;
+
+            }
+
+        }
+
+
+
+        /* =================================================
+           SHUT DOWN
+           ================================================= */
+
+        function shutdownOS() {
+
+            window.location.href =
+                "../logout/forceclose.html";
+
+        }
+
+
+
+        /* =================================================
+           DESKTOP FILES
+           (files saved into the "Desktop" folder
+           inside File Manager show up here too)
+           ================================================= */
+
+        function loadDesktopFiles() {
+
+            fetch(
+                "../filemanager/get_files.php?folder=desktop"
+            )
+                .then(res => res.json())
+                .then(files => {
+                    renderDesktopIcons(files);
+                })
+                .catch(err => {
+                    console.error(
+                        "Failed to load desktop files:",
+                        err
+                    );
+                });
+
+        }
+
+
+        function renderDesktopIcons(files) {
+
+            const grid =
+                document.querySelector(".icon-grid");
+
+            /*
+             * Clear out any icons we rendered
+             * on a previous refresh before
+             * re-drawing them.
+             */
+
+            grid
+                .querySelectorAll(".desktop-file-icon")
+                .forEach(el => el.remove());
+
+            files.forEach(filename => {
+
+                const icon =
+                    document.createElement("div");
+
+                icon.className =
+                    "icon desktop-file-icon";
+
+                icon.title = filename;
+
+                const imageWrap =
+                    document.createElement("div");
+
+                imageWrap.className = "icon-image";
+
+                const img =
+                    document.createElement("img");
+
+                img.src = "documentt.png";
+                img.alt = filename;
+
+                imageWrap.appendChild(img);
+
+                const label =
+                    document.createElement("span");
+
+                label.textContent = filename;
+
+                icon.appendChild(imageWrap);
+                icon.appendChild(label);
+
+                icon.addEventListener(
+                    "click",
+                    () => openDesktopFile(filename)
+                );
+
+                grid.appendChild(icon);
+
+            });
+
+        }
+
+
+        let openedDesktopFilename = null;
+
+        function openDesktopFile(filename) {
+
+            openedDesktopFilename = filename;
+
+            const viewer = document.getElementById("desktopFileViewer");
+            const title = document.getElementById("desktopFileViewerTitle");
+            const content = document.getElementById("desktopFileViewerContent");
+
+            title.textContent = filename;
+            content.textContent = "Loading...";
+            viewer.hidden = false;
+
+            fetch(
+                "../filemanager/get_file_content.php?folder=desktop&filename=" +
+                encodeURIComponent(filename)
+            )
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.error) {
+                        content.textContent = "Unable to open file: " + data.error;
+                        return;
+                    }
+
+                    content.textContent =
+                        data.content ?? "";
+
+                })
+                .catch(error => {
+
+                    console.error("Failed to open desktop file:", error);
+
+                    content.textContent =
+                        "Unable to open this file.";
+
+                });
+
+        }
+
+        function closeDesktopFileViewer() {
+
+            document.getElementById(
+                "desktopFileViewer"
+            ).hidden = true;
+
+            openedDesktopFilename = null;
+
+        }
+
+        function deleteOpenDesktopFile() {
+
+            if (!openedDesktopFilename) {
+                return;
+            }
+
+            const filename = openedDesktopFilename;
+
+            if (!confirm(`Delete "${filename}" from Desktop?`)) {
+                return;
+            }
+
+            const formData = new FormData();
+
+            formData.append("folder", "desktop");
+            formData.append("filename", filename);
+
+            fetch(
+                "../filemanager/delete_file.php",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            )
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.success) {
+
+                        closeDesktopFileViewer();
+                        loadDesktopFiles();
+
+                    } else {
+
+                        alert(
+                            data.error ||
+                            "Could not delete the file."
+                        );
+
+                    }
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        "Failed to delete desktop file:",
+                        error
+                    );
+
+                    alert(
+                        "Could not delete the file."
+                    );
+
+                });
+
+        }
+
+
+
+
+
+        /* =================================================
+           DESKTOP STARTUP
+           ================================================= */
+
+        /*
+         * Make absolutely sure no application
+         * is visible when the desktop boots.
+         */
+
+        closeAllApps();
+
+
+        /*
+         * Load any files saved into the
+         * Desktop folder as icons.
+         */
+
+        loadDesktopFiles();
+
+
+        /*
+         * Apply saved settings.
+         */
+
+        applyOSSettings();
+
+
+        /*
+         * Start clock.
+         */
+
+        updateClock();
+
+
+        setInterval(
+            updateClock,
+            1000
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+/* Reset and base styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;  /* White background instead of Windows blue */
+}
+
+/* File manager window fills entire viewport */
+.filemanager-window {
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+}
+
+/* Header styling */
+.header {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    background: #f3f3f3;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+    position: relative;
+}
+
+/* Body area with sidebar and file list */
+.body {
+    flex-grow: 1;
+    display: flex;
+    position: relative; /* for close button positioning */
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 200px;
+    border-right: 1px solid #ddd;
+    padding: 15px;
+    background: #f9f9f9;
+}
+
+/* File list */
+.file-list {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Close button styled like Windows */
+#close-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 34px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 0;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    line-height: 1;
+    z-index: 10;
+}
+
+#close-btn:hover {
+    background-color: #e81123; /* Windows red */
+    color: #fff;
+}
+
+#close-btn:focus {
+    outline: none;
+    box-shadow: 0 0 3px 2px rgba(232, 17, 35, 0.6);
+}
+
+/* Sidebar list styles */
+.sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 12px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #000;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+}
+
+.sidebar li:hover {
+    background-color: #e1e1e1;
+    border-left: 4px solid #0078d7;
+    color: #0078d7;
+    font-weight: 600;
+}
+
+/* File list item */
+.file-item {
+    padding: 10px 15px;
+    font-size: 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #000;
+    user-select: text;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.file-item:hover {
+    background-color: #cce4f7;
+    color: #0078d7;
+    font-weight: 600;
+}
+
+/* Editor styling */
+.editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.editor h3 {
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    color: #000;
+    user-select: text;
+}
+
+textarea#file-editor {
+    flex-grow: 1;
+    width: 100%;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    resize: none;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #000;
+    outline: none;
+    border: none;
+    user-select: text;
+}
+
+.editor-buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+}
+
+button {
+    background-color: #0078d7;
+    border: none;
+    color: white;
+    padding: 8px 18px;
+    font-size: 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    user-select: none;
+}
+
+button:hover {
+    background-color: #005a9e;
+}
+
+button:active {
+    background-color: #004070;
+}
+
+p {
+    color: #666;
+    font-style: italic;
+    user-select: none;
+}

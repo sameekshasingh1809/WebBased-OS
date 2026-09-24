@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Status</title>
+<link rel="stylesheet" href="network.css">
+</head>
+<body>
+<div class="network-window">
+  <h2>🌐 Network Status</h2>
+  <hr>
+
+  <div class="network-info">
+    <p><strong>Wi-Fi:</strong> <span id="wifiStatus">Disconnected</span></p>
+    <p><strong>SSID:</strong> <span id="ssid">-</span></p>
+    <p><strong>Signal:</strong> <span id="signal">-</span></p>
+    <p><strong>IP Address:</strong> <span id="ip">-</span></p>
+    <p><strong>Subnet Mask:</strong> <span id="subnet">-</span></p>
+    <p><strong>Gateway:</strong> <span id="gateway">-</span></p>
+  </div>
+
+  <div class="buttons">
+    <button id="connectBtn" class="connect">Connect</button>
+    <button id="disconnectBtn" class="disconnect" style="display:none;">Disconnect</button>
+    <button class="close" id="closeBtn">Close</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const wifiStatus = document.getElementById('wifiStatus');
+  const ssid = document.getElementById('ssid');
+  const signal = document.getElementById('signal');
+  const ip = document.getElementById('ip');
+  const subnet = document.getElementById('subnet');
+  const gateway = document.getElementById('gateway');
+  const connectBtn = document.getElementById('connectBtn');
+  const disconnectBtn = document.getElementById('disconnectBtn');
+  const closeBtn = document.getElementById('closeBtn');
+  const stateKey = 'networkState';
+
+  const randomIP = () => `192.168.${Math.floor(Math.random()*100)}.${Math.floor(Math.random()*255)}`;
+  const randomSignal = () => ["📶", "📶📶", "📶📶📶", "📶📶📶📶"][Math.floor(Math.random()*4)];
+
+  let netState = JSON.parse(localStorage.getItem(stateKey) || '{"connected":false}');
+
+  const updateUI = () => {
+    if (netState.connected) {
+      wifiStatus.textContent = 'Connected';
+      ssid.textContent = netState.ssid;
+      signal.textContent = netState.signal;
+      ip.textContent = netState.ip;
+      subnet.textContent = '255.255.255.0';
+      gateway.textContent = netState.gateway;
+      connectBtn.style.display = 'none';
+      disconnectBtn.style.display = 'inline-block';
+    } else {
+      wifiStatus.textContent = 'Disconnected';
+      ssid.textContent = '-';
+      signal.textContent = '-';
+      ip.textContent = '-';
+      subnet.textContent = '-';
+      gateway.textContent = '-';
+      connectBtn.style.display = 'inline-block';
+      disconnectBtn.style.display = 'none';
+    }
+  };
+  updateUI();
+
+  connectBtn.addEventListener('click', () => {
+    connectBtn.textContent = 'Connecting...';
+    connectBtn.disabled = true;
+
+    setTimeout(() => {
+      netState = {
+        connected: true,
+        ssid: 'Hotspot_5G',
+        signal: randomSignal(),
+        ip: randomIP(),
+        gateway: '192.168.1.1'
+      };
+      localStorage.setItem(stateKey, JSON.stringify(netState));
+      updateUI();
+      connectBtn.textContent = 'Connect';
+      connectBtn.disabled = false;
+
+      if (window.parent)
+        window.parent.postMessage({ type:'os:apply', payload:{ wifi:{ connected:true, ssid:netState.ssid } } }, '*');
+    }, 1500);
+  });
+
+  disconnectBtn.addEventListener('click', () => {
+    netState.connected = false;
+    localStorage.setItem(stateKey, JSON.stringify(netState));
+    updateUI();
+    if (window.parent)
+      window.parent.postMessage({ type:'os:apply', payload:{ wifi:{ connected:false } } }, '*');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    window.parent.postMessage({ action: 'close-network' }, '*');
+  });
+});
+</script>
+</body>
+</html>

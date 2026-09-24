@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: transparent;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.filemanager-window {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(132, 107, 107, 0.2);
+    width: 80%;
+    max-width: 900px;
+    height: 70%;
+    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filemanager-header {
+    background-color: #eee;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.close-button {
+    color: #333;
+    background-color: #fdd;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.filemanager-body {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    background-color:rgb(195, 183, 183);
+    border-right: 1px solid #eee;
+    padding: 15px;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar li:hover {
+    background-color: #eee;
+}
+
+.file-list {
+    padding: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.file-item {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.file-item:hover {
+    background-color:rgb(110, 104, 104);
+}
+
+.file-item svg {
+    margin-bottom: 5px;
+}

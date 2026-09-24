@@ -1,0 +1,15 @@
+[
+    {
+      "name": "evil_plan.txt",
+      "content": "Step 1: Train pigeons to deliver snacks.\nStep 2: Build a potato-powered laptop.\nStep 3: Take over the world (after lunch)."
+    },
+    {
+      "name": "cat_poem.txt",
+      "content": "Oh furry tyrant of the house,\nYou nap, you scratch, you chase a mouse.\nBut when I work, you sit on keys,\nMy productivity, you freeze."
+    },
+    {
+      "name": "passwords.txt",
+      "content": "Nice try 😎\nThis file self-destructs in 3... 2... just kidding.\nBut seriously, don't write passwords in plain text."
+    }
+  ]
+  

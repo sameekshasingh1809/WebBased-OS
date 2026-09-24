@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>WebOS - Login</title>
+
+
+  <!-- =====================================================
+       ALL LOGIN PAGE STYLING IS HERE
+       ===================================================== -->
+
+  <style>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      overflow: hidden;
+      color: white;
+    }
+
+
+    /* =====================================================
+       LOGIN SCREEN
+       ===================================================== */
+
+    .login-screen {
+
+      position: relative;
+
+      width: 100%;
+      height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background:
+        radial-gradient(
+          circle at 50% 42%,
+          rgba(82, 126, 148, 0.30) 0%,
+          rgba(82, 126, 148, 0.10) 25%,
+          transparent 52%
+        ),
+        linear-gradient(
+          145deg,
+          #292d30 0%,
+          #1b1e20 45%,
+          #070809 100%
+        );
+
+      overflow: hidden;
+    }
+
+
+    /* Ambient glow */
+
+    .login-screen::before {
+
+      content: "";
+
+      position: absolute;
+
+      width: 550px;
+      height: 550px;
+
+      left: 50%;
+      top: 50%;
+
+      transform: translate(-50%, -50%);
+
+      border-radius: 50%;
+
+      background:
+        rgba(100, 145, 165, 0.10);
+
+      filter: blur(100px);
+
+      pointer-events: none;
+    }
+
+
+    /* =====================================================
+       CLOCK
+       ===================================================== */
+
+    .datetime {
+
+      position: absolute;
+
+      top: 42px;
+
+      left: 0;
+      right: 0;
+
+      text-align: center;
+
+      z-index: 10;
+
+      user-select: none;
+    }
+
+
+    #clock {
+
+      font-size: 34px;
+
+      font-weight: 300;
+
+      letter-spacing: 0.3px;
+
+      color: white;
+
+      text-shadow:
+        0 2px 15px rgba(0, 0, 0, 0.35);
+    }
+
+
+    #date {
+
+      margin-top: 7px;
+
+      font-size: 14px;
+
+      color:
+        rgba(255, 255, 255, 0.60);
+    }
+
+
+    /* =====================================================
+       LOGIN CARD
+       ===================================================== */
+
+    .login-card {
+
+      position: relative;
+
+      width: 370px;
+
+      padding: 42px 40px 40px;
+
+      border-radius: 22px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.045)
+        );
+
+      border:
+        1px solid rgba(255, 255, 255, 0.13);
+
+      box-shadow:
+
+        0 30px 80px
+        rgba(0, 0, 0, 0.50),
+
+        0 8px 25px
+        rgba(0, 0, 0, 0.25),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.08);
+
+      backdrop-filter: blur(22px);
+
+      -webkit-backdrop-filter: blur(22px);
+
+      text-align: center;
+
+      z-index: 5;
+    }
+
+
+    /* =====================================================
+       AVATAR
+       ===================================================== */
+
+    .avatar {
+
+      width: 94px;
+      height: 94px;
+
+      margin:
+        0 auto 18px;
+
+      border-radius: 50%;
+
+      overflow: hidden;
+
+      background: #63869a;
+
+      border:
+        3px solid
+        rgba(255, 255, 255, 0.18);
+
+      box-shadow:
+
+        0 10px 30px
+        rgba(0, 0, 0, 0.35),
+
+        0 0 0 7px
+        rgba(255, 255, 255, 0.025);
+    }
+
+
+    .avatar img {
+
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: cover;
+    }
+
+
+    /* =====================================================
+       USERNAME
+       ===================================================== */
+
+    .username {
+
+      margin-bottom: 25px;
+
+      color: white;
+
+      font-size: 22px;
+
+      font-weight: 400;
+    }
+
+
+    /* =====================================================
+       PIN AREA
+       ===================================================== */
+
+    .pin-wrapper {
+
+      position: relative;
+
+      width: 100%;
+    }
+
+
+    .pin-wrapper input {
+
+      width: 100%;
+
+      height: 52px;
+
+      padding:
+        0 58px 0 17px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+
+      border-radius: 11px;
+
+      outline: none;
+
+      background:
+        rgba(0, 0, 0, 0.27);
+
+      color: white;
+
+      font-family: inherit;
+
+      font-size: 15px;
+
+      transition:
+        0.2s ease;
+    }
+
+
+    .pin-wrapper input::placeholder {
+
+      color:
+        rgba(255, 255, 255, 0.48);
+    }
+
+
+    .pin-wrapper input:hover {
+
+      background:
+        rgba(0, 0, 0, 0.34);
+    }
+
+
+    .pin-wrapper input:focus {
+
+      border-color:
+        rgba(135, 180, 200, 0.75);
+
+      background:
+        rgba(0, 0, 0, 0.36);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(100, 150, 175, 0.12);
+    }
+
+
+    /* =====================================================
+       LOGIN BUTTON
+       ===================================================== */
+
+    .login-button {
+
+      position: absolute;
+
+      right: 7px;
+      top: 7px;
+
+      width: 38px;
+      height: 38px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+      border-radius: 8px;
+
+      background:
+        rgba(255, 255, 255, 0.10);
+
+      color: white;
+
+      font-size: 21px;
+
+      cursor: pointer;
+
+      transition:
+        0.2s ease;
+    }
+
+
+    .login-button:hover {
+
+      background:
+        rgba(255, 255, 255, 0.20);
+
+      transform:
+        translateX(2px);
+    }
+
+
+    /* =====================================================
+       BOTTOM CONTROLS
+       ===================================================== */
+
+    .bottom-controls {
+
+      position: absolute;
+
+      left: 0;
+      right: 0;
+
+      bottom: 25px;
+
+      padding:
+        0 28px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      z-index: 50;
+    }
+
+
+    /* =====================================================
+       CONTROL BUTTON
+       ===================================================== */
+
+    .control-button {
+
+      width: 46px;
+      height: 46px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.09);
+
+      border-radius: 11px;
+
+      background:
+        rgba(255, 255, 255, 0.07);
+
+      color: white;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 15px
+        rgba(0, 0, 0, 0.20);
+
+      transition:
+        0.2s ease;
+    }
+
+
+    .control-button:hover {
+
+      background:
+        rgba(255, 255, 255, 0.15);
+
+      border-color:
+        rgba(255, 255, 255, 0.17);
+
+      transform:
+        translateY(-2px);
+    }
+
+
+    .control-button svg {
+
+      width: 22px;
+      height: 22px;
+    }
+
+
+    /* =====================================================
+       POWER
+       ===================================================== */
+
+    .power-container {
+
+      position: relative;
+    }
+
+
+    /* =====================================================
+       POWER MENU
+       ===================================================== */
+
+    .power-menu {
+
+      position: absolute;
+
+      right: 0;
+
+      bottom: 58px;
+
+      width: 205px;
+
+      padding: 7px;
+
+      border-radius: 14px;
+
+      background:
+        rgba(22, 24, 26, 0.97);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+      box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.55);
+
+      backdrop-filter: blur(18px);
+
+      -webkit-backdrop-filter: blur(18px);
+
+      opacity: 0;
+
+      visibility: hidden;
+
+      pointer-events: none;
+
+      transform:
+        translateY(8px)
+        scale(0.96);
+
+      transform-origin:
+        bottom right;
+
+      transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0.18s ease;
+    }
+
+
+    .power-menu.show {
+
+      opacity: 1;
+
+      visibility: visible;
+
+      pointer-events: auto;
+
+      transform:
+        translateY(0)
+        scale(1);
+    }
+
+
+    /* =====================================================
+       POWER OPTIONS
+       ===================================================== */
+
+    .power-menu button {
+
+      width: 100%;
+
+      height: 44px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding:
+        0 13px;
+
+      border: none;
+
+      border-radius: 9px;
+
+      background: transparent;
+
+      color: white;
+
+      font-family: inherit;
+
+      font-size: 14px;
+
+      text-align: left;
+
+      cursor: pointer;
+
+      transition:
+        0.15s ease;
+    }
+
+
+    .power-menu button:hover {
+
+      background:
+        rgba(255, 255, 255, 0.10);
+    }
+
+
+    .power-menu button span:first-child {
+
+      width: 23px;
+
+      text-align: center;
+
+      font-size: 17px;
+
+      color:
+        rgba(255, 255, 255, 0.85);
+    }
+
+
+    /* =====================================================
+       USER LIST
+       ===================================================== */
+
+    .user-list {
+
+      position: absolute;
+
+      left: 28px;
+
+      bottom: 82px;
+
+      min-width: 175px;
+
+      padding: 7px;
+
+      border-radius: 14px;
+
+      background:
+        rgba(22, 24, 26, 0.97);
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+      box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.55);
+
+      backdrop-filter:
+        blur(18px);
+
+      -webkit-backdrop-filter:
+        blur(18px);
+
+      z-index: 100;
+    }
+
+
+    .user-list ul {
+
+      list-style: none;
+
+      margin: 0;
+      padding: 0;
+    }
+
+
+    .user-list li {
+
+      padding:
+        11px 13px;
+
+      border-radius: 9px;
+
+      color: white;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease;
+    }
+
+
+    .user-list li:hover {
+
+      background:
+        rgba(255, 255, 255, 0.10);
+    }
+
+
+    /* =====================================================
+       SLEEP / RESTART
+       ===================================================== */
+
+    .system-screen {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 1000;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #020202;
+
+      color: white;
+
+      cursor: pointer;
+    }
+
+
+    .system-message {
+
+      text-align: center;
+    }
+
+
+    .system-icon,
+    .restart-icon {
+
+      margin-bottom: 18px;
+
+      font-size: 62px;
+
+      color:
+        rgba(255, 255, 255, 0.90);
+    }
+
+
+    .system-message h2 {
+
+      margin: 0;
+
+      font-size: 24px;
+
+      font-weight: 400;
+    }
+
+
+    .system-message p {
+
+      margin-top: 10px;
+
+      font-size: 14px;
+
+      color:
+        rgba(255, 255, 255, 0.48);
+    }
+
+
+    .restart-icon {
+
+      animation:
+        rotate 1.2s linear infinite;
+    }
+
+
+    @keyframes rotate {
+
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+      .datetime {
+        top: 30px;
+      }
+
+      #clock {
+        font-size: 29px;
+      }
+
+      #date {
+        font-size: 13px;
+      }
+
+      .login-card {
+
+        width:
+          calc(100% - 40px);
+
+        max-width: 370px;
+
+        padding:
+          38px 25px;
+      }
+
+      .bottom-controls {
+
+        padding:
+          0 18px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       LOGIN SCREEN
+       ===================================================== -->
+
+  <main
+    class="login-screen"
+    id="loginScreen"
+  >
+
+
+    <!-- DATE AND TIME -->
+
+    <div class="datetime">
+
+      <div id="clock">
+        12:00 AM
+      </div>
+
+      <div id="date">
+        Loading...
+      </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         LOGIN CARD
+         ================================================= -->
+
+    <section class="login-card">
+
+
+      <form
+        action="login.php"
+        method="POST"
+        id="loginForm"
+      >
+
+
+        <!-- USERNAME SENT TO PHP -->
+
+        <input
+          type="hidden"
+          name="username"
+          id="usernameInput"
+          value="admin"
+        >
+
+
+        <!-- AVATAR -->
+
+        <div class="avatar">
+
+          <img
+            src="user-icon.png"
+            alt="User Avatar"
+          >
+
+        </div>
+
+
+        <!-- USERNAME -->
+
+        <div
+          class="username"
+          id="displayUsername"
+        >
+          Admin
+        </div>
+
+
+        <!-- PIN -->
+
+        <div class="pin-wrapper">
+
+          <input
+            type="password"
+            name="pin"
+            id="pinInput"
+            placeholder="Enter PIN"
+            required
+            autocomplete="off"
+          >
+
+
+          <button
+            type="submit"
+            class="login-button"
+            aria-label="Login"
+          >
+            →
+          </button>
+
+        </div>
+
+
+      </form>
+
+    </section>
+
+
+
+    <!-- =================================================
+         USER LIST
+         ================================================= -->
+
+    <div
+      id="userList"
+      class="user-list"
+      style="display: none;"
+    ></div>
+
+
+
+    <!-- =================================================
+         BOTTOM CONTROLS
+         ================================================= -->
+
+    <div class="bottom-controls">
+
+
+      <!-- USER SWITCH -->
+
+      <button
+        class="control-button"
+        onclick="toggleUser()"
+        aria-label="Switch user"
+      >
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            fill="currentColor"
+            d="
+              M12 4
+              a4 4 0 1 0 0 8
+              a4 4 0 0 0 0-8
+
+              M12 14
+              c-4.42 0-8 2.24-8 5
+              v1h16v-1
+              c0-2.76-3.58-5-8-5Z
+            "
+          />
+
+        </svg>
+
+      </button>
+
+
+
+      <!-- POWER -->
+
+      <div class="power-container">
+
+
+        <button
+          class="control-button"
+          onclick="togglePower(event)"
+          aria-label="Power options"
+        >
+
+          <svg viewBox="0 0 24 24">
+
+            <path
+              d="M12 3V11"
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+
+            <path
+              d="
+                M7.05 5.93
+                A8 8 0 1 0 16.95 5.93
+              "
+              stroke="currentColor"
+              stroke-width="2"
+              fill="none"
+              stroke-linecap="round"
+            />
+
+          </svg>
+
+        </button>
+
+
+
+        <!-- POWER MENU -->
+
+        <div
+          id="powerList"
+          class="power-menu"
+        >
+
+          <button
+            onclick="loginShutdown(event)"
+          >
+            <span>⏻</span>
+            <span>Shut Down</span>
+          </button>
+
+
+          <button
+            onclick="loginSleep(event)"
+          >
+            <span>◐</span>
+            <span>Sleep</span>
+          </button>
+
+
+          <button
+            onclick="loginRestart(event)"
+          >
+            <span>↻</span>
+            <span>Restart</span>
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- =====================================================
+       SLEEP SCREEN
+       ===================================================== -->
+
+  <section
+    id="sleepScreen"
+    class="system-screen"
+    style="display: none;"
+  >
+
+    <div class="system-message">
+
+      <div class="system-icon">
+        ◐
+      </div>
+
+      <h2>
+        System is sleeping
+      </h2>
+
+      <p>
+        Press any key or click anywhere to wake
+      </p>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       RESTART SCREEN
+       ===================================================== -->
+
+  <section
+    id="restartScreen"
+    class="system-screen"
+    style="display: none;"
+  >
+
+    <div class="system-message">
+
+      <div class="restart-icon">
+        ↻
+      </div>
+
+      <h2>
+        Restarting...
+      </h2>
+
+      <p>
+        Please wait
+      </p>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       EXISTING USER SWITCH SCRIPT
+       ===================================================== -->
+
+  <script src="switch-user.js"></script>
+
+
+
+  <!-- =====================================================
+       LOGIN / POWER JAVASCRIPT
+       ===================================================== -->
+
+  <script>
+
+
+    /* =====================================================
+       LIVE CLOCK
+       ===================================================== */
+
+    function updateDateTime() {
+
+      const now = new Date();
+
+
+      let hours =
+        now.getHours();
+
+
+      const minutes =
+        String(
+          now.getMinutes()
+        ).padStart(2, "0");
+
+
+      const ampm =
+        hours >= 12
+          ? "PM"
+          : "AM";
+
+
+      hours =
+        hours % 12;
+
+
+      if (hours === 0) {
+        hours = 12;
+      }
+
+
+      document
+        .getElementById("clock")
+        .textContent =
+        `${hours}:${minutes} ${ampm}`;
+
+
+      const dateOptions = {
+
+        weekday: "long",
+
+        day: "numeric",
+
+        month: "long"
+
+      };
+
+
+      document
+        .getElementById("date")
+        .textContent =
+        now.toLocaleDateString(
+          "en-IN",
+          dateOptions
+        );
+
+    }
+
+
+    updateDateTime();
+
+    setInterval(
+      updateDateTime,
+      1000
+    );
+
+
+
+    /* =====================================================
+       POWER MENU
+       ===================================================== */
+
+    function togglePower(event) {
+
+      if (event) {
+        event.stopPropagation();
+      }
+
+
+      const menu =
+        document.getElementById(
+          "powerList"
+        );
+
+
+      menu.classList.toggle("show");
+
+    }
+
+
+
+    /* =====================================================
+       SHUT DOWN
+       ===================================================== */
+
+    function loginShutdown(event) {
+
+      if (event) {
+        event.stopPropagation();
+      }
+
+
+      document
+        .getElementById("powerList")
+        .classList.remove("show");
+
+
+      window.location.href =
+        "../logout/forceclose.html";
+
+    }
+
+
+
+    /* =====================================================
+       SLEEP
+       ===================================================== */
+
+    function loginSleep(event) {
+
+      if (event) {
+        event.stopPropagation();
+      }
+
+
+      document
+        .getElementById("powerList")
+        .classList.remove("show");
+
+
+      document
+        .getElementById("loginScreen")
+        .style.display =
+        "none";
+
+
+      document
+        .getElementById("sleepScreen")
+        .style.display =
+        "flex";
+
+    }
+
+
+
+    /* =====================================================
+       WAKE FROM SLEEP
+       ===================================================== */
+
+    function wakeFromSleep() {
+
+      document
+        .getElementById("sleepScreen")
+        .style.display =
+        "none";
+
+
+      document
+        .getElementById("loginScreen")
+        .style.display =
+        "flex";
+
+
+      document
+        .getElementById("pinInput")
+        .focus();
+
+    }
+
+
+
+    /* Click to wake */
+
+    document
+      .getElementById("sleepScreen")
+      .addEventListener(
+        "click",
+        wakeFromSleep
+      );
+
+
+
+    /* Keyboard to wake */
+
+    document.addEventListener(
+      "keydown",
+      function () {
+
+        const sleepScreen =
+          document.getElementById(
+            "sleepScreen"
+          );
+
+
+        if (
+          sleepScreen.style.display ===
+          "flex"
+        ) {
+
+          wakeFromSleep();
+
+        }
+
+      }
+    );
+
+
+
+    /* =====================================================
+       RESTART
+       ===================================================== */
+
+    function loginRestart(event) {
+
+      if (event) {
+        event.stopPropagation();
+      }
+
+
+      document
+        .getElementById("powerList")
+        .classList.remove("show");
+
+
+      document
+        .getElementById("loginScreen")
+        .style.display =
+        "none";
+
+
+      document
+        .getElementById("restartScreen")
+        .style.display =
+        "flex";
+
+
+      setTimeout(
+        function () {
+
+          window.location.href =
+            "index.html";
+
+        },
+        2000
+      );
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE POWER MENU WHEN CLICKING OUTSIDE
+       ===================================================== */
+
+    document.addEventListener(
+      "click",
+      function (event) {
+
+        const menu =
+          document.getElementById(
+            "powerList"
+          );
+
+
+        const powerContainer =
+          document.querySelector(
+            ".power-container"
+          );
+
+
+        if (
+          !powerContainer.contains(
+            event.target
+          )
+        ) {
+
+          menu.classList.remove(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+  </script>
+
+
+</body>
+
+</html>
